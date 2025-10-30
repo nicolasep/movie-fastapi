@@ -1,0 +1,116 @@
+from fastapi import FastAPI, Body
+from fastapi.responses import HTMLResponse
+
+app = FastAPI(
+    title ='Aprendiendo FastAPI',
+    description='Una api en los primeros pasos',
+    version='0.0.1'
+)
+
+@app.get('/', tags=['inicio'])
+def read_root():
+    return HTMLResponse('<h2> Hola Mundo!</h2>')
+
+
+movies = [     
+    {
+        "id": 1,
+        "title": "Inception",
+        "overview": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+        "year": 2010,
+        "rating": 8.8,
+        "category": "Sci-Fi"
+    },
+    {
+        "id": 2,
+        "title": "The Shawshank Redemption",
+        "overview": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+        "year": 1994,
+        "rating": 9.3,
+        "category": "Drama"
+    },
+    {
+        "id": 3,
+        "title": "The Godfather",
+        "overview": "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
+        "year": 1972,
+        "rating": 9.2,
+        "category": "Crime"
+    },
+    {
+        "id": 4,
+        "title": "The Dark Knight",
+        "overview": "When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.",
+        "year": 2008,
+        "rating": 9.0,
+        "category": "Action"
+    },
+    {
+        "id": 5,
+        "title": "Pulp Fiction",
+        "overview": "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
+        "year": 1994,
+        "rating": 8.9,
+        "category": "Crime"
+    } 
+]
+
+@app.get('/Movies', tags=['Movies'])
+def get_movies():
+    return movies
+
+@app.get('/Movies/{id}',tags=['Movies'])
+def get_movie(id: int):
+    for item in movies:
+        if item["id"] == id: 
+            return item
+    return []
+
+@app.get('/Movies/', tags=['Movies'])
+def get_movies_by_category(category: str):
+    return category
+
+@app.post('/Movies', tags=['Movies'])
+def create_movie(
+    id: int = Body(),
+    title: str= Body(),
+    overview: str= Body(),
+    year: int= Body(),
+    rating: float= Body(),
+    category: str= Body()
+):
+    movies.append({
+    "id": id,
+    "title": title,
+    "overview": overview,
+    "year": year,
+    "rating": rating,
+    "category": category
+    })
+    print(movies)
+    return title
+
+@app.put('/Movies{id}', tags=['Movies'])
+def update_movie(
+    id: int,
+    title: str= Body(),
+    overview: str= Body(),
+    year: int= Body(),
+    rating: float= Body(),
+    category: str= Body()
+):
+    for item in movies:
+        if item["id"] == id:
+            item['title']= title,
+            item['overview']= overview,
+            item['year']= year,
+            item['rating']= rating,
+            item['category']= category
+            return movies
+    
+@app.delete('/Movies{id}', tags=['Movies'])
+def delete_movie(id:int):
+    for item in movies:
+        if item["id"] == id:
+            movies.remove(item)
+            return movies
